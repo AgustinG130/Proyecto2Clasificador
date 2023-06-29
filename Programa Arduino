@@ -1,0 +1,53 @@
+#include <Servo.h>
+
+const int sensorPin = A0;   // Pin del sensor de luz
+const int servoPin = 9;     // Pin del servomotor
+const int Trigger = 2;   //Pin digital 2 para el Trigger del sensor
+const int Echo = 3;   //Pin digital 3 para el Echo del sensor
+Servo servoMotor;
+int lightThreshold = 150;   // Nivel de luz umbral para activar el movimiento del servomotor
+int servoDelay = 10000;     // Duración del tiempo de espera en milisegundos (10 segundos)
+int initialPosition = 0;   // Posición inicial del servomotor (90 grados)
+
+void setup() {
+  Serial.begin(9600);
+  servoMotor.attach(servoPin); // Adjuntar el servomotor al pin correspondiente
+  servoMotor.write(initialPosition); // Establecer la posición inicial del servomotor
+  pinMode(Trigger, OUTPUT); //pin como salida
+  pinMode(Echo, INPUT);  //pin como entrada
+  digitalWrite(Trigger, LOW);
+}
+
+
+void loop() {
+  int lightLevel = analogRead(sensorPin); // Leer el nivel de luz del sensor
+
+  Serial.print("Nivel de luz: ");
+  Serial.println(lightLevel);
+  long t; //timepo que demora en llegar el eco
+  long d; //distancia en centimetros
+
+  digitalWrite(Trigger, HIGH);
+  delayMicroseconds(10);          //Enviamos un pulso de 10us
+  digitalWrite(Trigger, LOW);
+  
+  t = pulseIn(Echo, HIGH); //obtenemos el ancho del pulso
+  d = t/59;             //escalamos el tiempo a una distancia en cm
+  
+  Serial.print("Distancia: ");
+  Serial.print(d);      //Enviamos serialmente el valor de la distancia
+  Serial.print("cm");
+  Serial.println();
+
+  if (d < 50 && lightLevel > lightThreshold) {
+    // Girar el servomotor a 90 grados
+    servoMotor.write(180);
+    delay(10000); // Esperar durante el tiempo definido
+    servoMotor.write(initialPosition);// Volver a la posición inicial
+    delay(10000); // Esperar 1 segundo antes de la siguiente lectura
+    }
+  }
+
+
+//fijarse cual es el max y min de nivel de luz del sensor.
+//y a que distancia el usuario deberia de poner la mano. 
