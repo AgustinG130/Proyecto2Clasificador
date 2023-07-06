@@ -26,7 +26,7 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS3472
 #define commonAnode true
 // our RGB -> eye-recognized gamma color
 byte gammatable[256];
-int servoDelay = 10000;              // Duración del tiempo de espera en milisegundos (10 segundos)
+int servoDelay = 7500;              // Duración del tiempo de espera en milisegundos (10 segundos)
 int initialPosition = 0;             // Posición inicial del servomotor (90 grados)
 
 void setup() {
@@ -86,21 +86,21 @@ for (int i = 0; i < 256; i++) {
 
   Serial.print("\n");
    // Verificar los valores de color para determinar el movimiento del servomotor
-  if (red > green && red > blue && red>150)  {
+  if (red > green && red > blue)  {
     // Color Rojo detectado
-    servoMotor1.write(180);               // Girar el servomotor a 180 grados
+    servoMotor1.write(90);               // Girar el servomotor a 180 grados
     delay(servoDelay);                 // Esperar durante el tiempo definido
-  } else if (green > 95) {
+  } else if (green > red && green > blue) {
     // Color Verde detectado
-    servoMotor2.write(180);              // Girar el servomotor a 180 grados
+    servoMotor2.write(90);              // Girar el servomotor a 180 grados
     delay(servoDelay);                 // Esperar durante el tiempo definido
-  } else if (blue>95) {
+  } else if (blue > red && blue > green) {
     // Color Azul detectado
-    servoMotor3.write(180);             // Girar el servomotor a 180 grados
+    servoMotor3.write(90);             // Girar el servomotor a 180 grados
         delay(servoDelay);                 // Esperar durante el tiempo definido
   } else if (red > green && green > blue) {
   // Color Amarillo detectado
-    servoMotor4.write(180);             // Girar el servomotor a 180 grados
+    servoMotor4.write(90);             // Girar el servomotor a 180 grados
         delay(servoDelay);                 // Esperar durante el tiempo definido
   }
 long t; //timepo que demora en llegar el eco
